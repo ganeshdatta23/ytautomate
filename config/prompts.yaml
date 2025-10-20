@@ -1,0 +1,153 @@
+psychology_facts:
+  title_templates:
+    - "10 Dark Psychology Facts That Will {emotion}"
+    - "Why {behavior} - Psychology Explained"
+    - "The Psychology Behind {topic} Nobody Talks About"
+    - "{number} Psychology Tricks That Actually Work"
+    - "Dark Psychology: How {topic} Controls Your Mind"
+  
+  topics:
+    - "manipulation tactics"
+    - "body language secrets"
+    - "cognitive biases"
+    - "social influence"
+    - "persuasion techniques"
+    - "emotional intelligence"
+    - "human behavior patterns"
+    - "subconscious mind"
+    - "decision making"
+    - "first impressions"
+  
+  script_prompt: |
+    Write an engaging 8-minute YouTube script about {topic} in psychology.
+    
+    Structure:
+    HOOK (0:00-0:10): Start with a shocking question or statement that grabs attention immediately.
+    
+    INTRO (0:10-0:30): Brief welcome, mention the channel, ask viewers to subscribe.
+    
+    MAIN CONTENT (0:30-7:30): Present 10 fascinating psychology facts about {topic}.
+    Each fact should be 60-70 seconds with:
+    - Clear explanation
+    - Real-world example
+    - Why it matters
+    
+    OUTRO (7:30-8:00): Quick summary, strong call-to-action, tease next video.
+    
+    Style: Conversational, mysterious, engaging. Use phrases like "You won't believe...", "Here's the thing...", "But here's what's crazy..."
+    
+    Word count: 1500-2000 words
+
+history_mystery:
+  title_templates:
+    - "The Mystery of {topic} That Historians Can't Explain"
+    - "{topic}: The Truth They Don't Want You To Know"
+    - "What Really Happened to {topic}?"
+    - "The Dark Secret Behind {topic}"
+    - "Unsolved: The {topic} Mystery"
+  
+  topics:
+    - "the Bermuda Triangle"
+    - "ancient civilizations"
+    - "lost treasures"
+    - "historical conspiracies"
+    - "unexplained disappearances"
+    - "ancient technology"
+    - "mysterious artifacts"
+    - "forgotten empires"
+    - "historical cover-ups"
+    - "ancient mysteries"
+  
+  script_prompt: |
+    Write a captivating 8-minute YouTube script about {topic} in history.
+    
+    Structure:
+    HOOK (0:00-0:10): Present the mystery with dramatic tension.
+    
+    INTRO (0:10-0:30): Set the scene, welcome viewers, subscribe reminder.
+    
+    MAIN CONTENT (0:30-7:30): Explore the mystery with:
+    - Historical background
+    - Known facts
+    - Theories and speculation
+    - Evidence for and against
+    - Expert opinions
+    - Recent discoveries
+    
+    OUTRO (7:30-8:00): Summarize the mystery, ask viewers their opinion, CTA.
+    
+    Style: Mysterious, dramatic, documentary-style. Build suspense throughout.
+    
+    Word count: 1500-2000 words
+
+finance:
+  title_templates:
+    - "How to {goal} in {timeframe} (Step by Step)"
+    - "{number} Money Mistakes Keeping You Poor"
+    - "The {topic} Strategy Rich People Use"
+    - "I Tried {strategy} for {timeframe} - Here's What Happened"
+    - "{topic} Explained in {timeframe} Minutes"
+  
+  topics:
+    - "passive income"
+    - "investing for beginners"
+    - "saving money"
+    - "side hustles"
+    - "financial freedom"
+    - "budgeting strategies"
+    - "wealth building"
+    - "money mindset"
+    - "debt elimination"
+    - "retirement planning"
+  
+  script_prompt: |
+    Write a practical 8-minute YouTube script about {topic} in personal finance.
+    
+    Structure:
+    HOOK (0:00-0:10): Promise a specific result or reveal a money mistake.
+    
+    INTRO (0:10-0:30): Introduce yourself, relate to viewer's struggles, subscribe CTA.
+    
+    MAIN CONTENT (0:30-7:30): Provide actionable advice on {topic}:
+    - Why this matters
+    - Common mistakes
+    - Step-by-step strategy
+    - Real examples with numbers
+    - Tools and resources
+    - Expected results
+    
+    OUTRO (7:30-8:00): Recap key points, motivational close, next video tease.
+    
+    Style: Practical, motivational, no-nonsense. Use specific numbers and examples.
+    
+    Word count: 1500-2000 words
+
+reddit_stories:
+  title_templates:
+    - "I {action} and It Ruined My Life - Reddit Story"
+    - "My {relationship} {action} - Am I Wrong?"
+    - "I Discovered My {relationship} {secret} - Reddit Drama"
+    - "AITA for {action}? - Reddit Stories"
+    - "Entitled {person} Tried to {action} - Reddit Revenge"
+  
+  script_prompt: |
+    Write a dramatic 8-minute YouTube script based on a Reddit story about {topic}.
+    
+    Structure:
+    HOOK (0:00-0:10): Tease the most dramatic moment of the story.
+    
+    INTRO (0:10-0:30): Set up the story, ask viewers to subscribe and comment their opinion.
+    
+    MAIN CONTENT (0:30-7:30): Tell the story with:
+    - Background and context
+    - Rising tension
+    - The main conflict
+    - Dramatic revelations
+    - Resolution or aftermath
+    - Reddit community reactions
+    
+    OUTRO (7:30-8:00): Ask viewers "Who was wrong?", encourage comments, next story tease.
+    
+    Style: Dramatic, conversational, emotionally engaging. Use dialogue and vivid descriptions.
+    
+    Word count: 1500-2000 words
