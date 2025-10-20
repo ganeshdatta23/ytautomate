@@ -26,8 +26,17 @@ def authenticate():
         
     creds = None
     if os.path.exists('token.pickle'):
-        with open('token.pickle', 'rb') as token:
-            creds = pickle.load(token)
+        try:
+            with open('token.pickle', 'rb') as token:
+                creds = pickle.load(token)
+        except (EOFError, pickle.UnpicklingError) as pe:
+            print(f"ERROR: token.pickle is corrupted or empty: {pe}")
+            print("Removing corrupted token.pickle so a fresh authentication can run...")
+            try:
+                os.remove('token.pickle')
+            except Exception:
+                print("Could not remove token.pickle automatically. Please delete it manually and retry.")
+            creds = None
     
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:

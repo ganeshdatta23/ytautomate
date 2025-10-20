@@ -29,8 +29,17 @@ class YouTubeUploader:
             creds = None
             
             if os.path.exists(self.token_file):
-                with open(self.token_file, 'rb') as token:
-                    creds = pickle.load(token)
+                try:
+                    with open(self.token_file, 'rb') as token:
+                        creds = pickle.load(token)
+                except (EOFError, pickle.UnpicklingError) as pe:
+                    logger.error(f"\u274c Failed to read {self.token_file}: {pe}")
+                    logger.error("The token file appears to be empty or corrupted. Removing it so a fresh authentication can run.")
+                    try:
+                        os.remove(self.token_file)
+                    except Exception:
+                        logger.debug("Could not remove corrupted token file; you may need to delete it manually.")
+                    creds = None
             
             if not creds or not creds.valid:
                 if creds and creds.expired and creds.refresh_token:
