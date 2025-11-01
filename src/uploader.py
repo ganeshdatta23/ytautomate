@@ -92,7 +92,7 @@ class YouTubeUploader:
             return True
             
         except Exception as e:
-            logger.error(f"❌ Authentication failed: {e}")
+            logger.error(f"❌ Authentication failed: {str(e)[:100]}")
             return False
     
     def _authenticate_from_env(self) -> Optional[Credentials]:
@@ -116,12 +116,16 @@ class YouTubeUploader:
                 creds.refresh(Request())
                 return creds
             
-            # Method 2: Base64 encoded token
+            # Method 2: Base64 encoded token (deprecated - use refresh token instead)
             token_b64 = os.getenv('YOUTUBE_TOKEN_PICKLE_BASE64')
             if token_b64:
                 try:
                     logger.info("🔑 Using base64 token from environment")
                     token_data = base64.b64decode(token_b64)
+                    # Validate token data before deserializing
+                    if len(token_data) > 10000:  # Reasonable size limit
+                        logger.error("Token data too large, potential security risk")
+                        return None
                     creds = pickle.loads(token_data)
                     if creds.expired and creds.refresh_token:
                         creds.refresh(Request())

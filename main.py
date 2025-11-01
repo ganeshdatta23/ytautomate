@@ -35,6 +35,15 @@ class YouTubeAutomation:
     def __init__(self, config_path: str = 'config/config.yaml', prompts_path: str = 'config/prompts.yaml'):
         load_dotenv()
         
+        # Use absolute paths to prevent path traversal
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        config_path = os.path.join(base_dir, config_path)
+        prompts_path = os.path.join(base_dir, prompts_path)
+        
+        # Validate paths are within project directory
+        if not config_path.startswith(base_dir) or not prompts_path.startswith(base_dir):
+            raise ValueError("Invalid config path")
+            
         with open(config_path, 'r') as f:
             self.config = yaml.safe_load(f)
         
