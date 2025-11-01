@@ -31,11 +31,14 @@ class YouTubeUploader:
             
             # Try environment variables first (for CI/CD)
             if os.getenv('CI') or os.getenv('GITHUB_ACTIONS'):
+                logger.info("Detected CI environment, trying environment authentication")
                 creds = self._authenticate_from_env()
                 if creds:
                     self.youtube = build('youtube', 'v3', credentials=creds)
                     logger.info("✅ YouTube authentication successful (CI)")
                     return True
+                else:
+                    logger.error("Environment authentication failed in CI")
             
             # Try existing token file
             if os.path.exists(self.token_file):
@@ -103,6 +106,10 @@ class YouTubeUploader:
             client_secret = os.getenv('YOUTUBE_CLIENT_SECRET')
             refresh_token = os.getenv('YOUTUBE_REFRESH_TOKEN')
             
+            logger.info(f"Debug - CLIENT_ID: {'✅' if client_id else '❌'}")
+            logger.info(f"Debug - CLIENT_SECRET: {'✅' if client_secret else '❌'}")
+            logger.info(f"Debug - REFRESH_TOKEN: {'✅' if refresh_token else '❌'}")
+            
             if client_id and client_secret and refresh_token:
                 logger.info("🔑 Using environment variables for authentication")
                 creds = Credentials(
@@ -115,6 +122,8 @@ class YouTubeUploader:
                 )
                 creds.refresh(Request())
                 return creds
+            else:
+                logger.error("Missing required environment variables for authentication")
             
             # Method 2: Base64 encoded token (deprecated - use refresh token instead)
             token_b64 = os.getenv('YOUTUBE_TOKEN_PICKLE_BASE64')
