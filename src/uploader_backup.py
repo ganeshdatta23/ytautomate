@@ -2,7 +2,6 @@
 import os
 import logging
 import pickle
-import base64
 from typing import Dict, Optional
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -29,63 +28,33 @@ class YouTubeUploader:
         try:
             creds = None
             
-            # Try environment variables first (for CI/CD)
-            if os.getenv('CI') or os.getenv('GITHUB_ACTIONS'):
-                creds = self._authenticate_from_env()
-                if creds:
-                    self.youtube = build('youtube', 'v3', credentials=creds)
-                    logger.info("✅ YouTube authentication successful (CI)")
-                    return True
-            
-            # Try existing token file
             if os.path.exists(self.token_file):
                 try:
                     with open(self.token_file, 'rb') as token:
                         creds = pickle.load(token)
-                except (EOFError, pickle.UnpicklingError, pickle.PickleError) as pe:
-                    logger.error(f"❌ Failed to read {self.token_file}: {pe}")
-                    logger.error("The token file appears to be empty or corrupted. Removing it.")
+                except (EOFError, pickle.UnpicklingError) as pe:
+                    logger.error(f"\u274c Failed to read {self.token_file}: {pe}")
+                    logger.error("The token file appears to be empty or corrupted. Removing it so a fresh authentication can run.")
                     try:
                         os.remove(self.token_file)
                     except Exception:
-                        pass
+                        logger.debug("Could not remove corrupted token file; you may need to delete it manually.")
                     creds = None
             
-            # Refresh or get new credentials
             if not creds or not creds.valid:
                 if creds and creds.expired and creds.refresh_token:
-                    try:
-                        logger.info("🔄 Refreshing expired token...")
-                        creds.refresh(Request())
-                    except Exception as e:
-                        logger.error(f"Token refresh failed: {e}")
-                        creds = None
-                
-                # Interactive flow for local development
-                if not creds:
+                    creds.refresh(Request())
+                else:
                     if not os.path.exists(self.credentials_file):
                         logger.error("❌ client_secret.json not found. Download from Google Cloud Console.")
-                        return False
-                    
-                    if os.getenv('CI') or os.getenv('GITHUB_ACTIONS'):
-                        logger.error("❌ Cannot run interactive auth in CI environment")
                         return False
                     
                     flow = InstalledAppFlow.from_client_secrets_file(
                         self.credentials_file, SCOPES)
                     creds = flow.run_local_server(port=0)
                 
-                # Save valid credentials
-                if creds and creds.valid:
-                    try:
-                        with open(self.token_file, 'wb') as token:
-                            pickle.dump(creds, token)
-                    except Exception as e:
-                        logger.warning(f"Could not save token: {e}")
-            
-            if not creds or not creds.valid:
-                logger.error("❌ Could not obtain valid credentials")
-                return False
+                with open(self.token_file, 'wb') as token:
+                    pickle.dump(creds, token)
             
             self.youtube = build('youtube', 'v3', credentials=creds)
             logger.info("✅ YouTube authentication successful")
@@ -94,46 +63,6 @@ class YouTubeUploader:
         except Exception as e:
             logger.error(f"❌ Authentication failed: {e}")
             return False
-    
-    def _authenticate_from_env(self) -> Optional[Credentials]:
-        """Try to authenticate using environment variables (for CI/CD)"""
-        try:
-            # Method 1: Direct credentials
-            client_id = os.getenv('YOUTUBE_CLIENT_ID')
-            client_secret = os.getenv('YOUTUBE_CLIENT_SECRET')
-            refresh_token = os.getenv('YOUTUBE_REFRESH_TOKEN')
-            
-            if client_id and client_secret and refresh_token:
-                logger.info("🔑 Using environment variables for authentication")
-                creds = Credentials(
-                    token=None,
-                    refresh_token=refresh_token,
-                    token_uri='https://oauth2.googleapis.com/token',
-                    client_id=client_id,
-                    client_secret=client_secret,
-                    scopes=SCOPES
-                )
-                creds.refresh(Request())
-                return creds
-            
-            # Method 2: Base64 encoded token
-            token_b64 = os.getenv('YOUTUBE_TOKEN_PICKLE_BASE64')
-            if token_b64:
-                try:
-                    logger.info("🔑 Using base64 token from environment")
-                    token_data = base64.b64decode(token_b64)
-                    creds = pickle.loads(token_data)
-                    if creds.expired and creds.refresh_token:
-                        creds.refresh(Request())
-                    return creds
-                except Exception as e:
-                    logger.error(f"Failed to decode base64 token: {e}")
-            
-            return None
-            
-        except Exception as e:
-            logger.error(f"Environment authentication failed: {e}")
-            return None
     
     def upload(self, video_path: str, metadata: Dict, thumbnail_path: Optional[str] = None) -> Optional[str]:
         """Upload video to YouTube"""

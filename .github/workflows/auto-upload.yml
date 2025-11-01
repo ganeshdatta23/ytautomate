@@ -41,9 +41,9 @@ jobs:
         run: |
           echo '${{ secrets.YOUTUBE_CLIENT_SECRET_JSON }}' > client_secret.json
       
-      - name: Restore token.pickle from secret
+      - name: Setup YouTube authentication
         run: |
-          echo "${{ secrets.YOUTUBE_TOKEN_PICKLE_BASE64 }}" | base64 -d > token.pickle
+          echo "YOUTUBE_REFRESH_TOKEN=${{ secrets.YOUTUBE_REFRESH_TOKEN }}" >> .env
       
       - name: Generate and upload video
         run: |
@@ -66,17 +66,18 @@ jobs:
 #    Add: padamataganeshdatta@gmail.com as test user
 #
 # 2. Authenticate locally:
-#    python authenticate_youtube.py
+#    python authenticate_github.py
 #    This creates token.pickle
 #
-# 3. Encode token.pickle to base64:
-#    python -c "import base64; print(base64.b64encode(open('token.pickle','rb').read()).decode())"
+# 3. Extract refresh token:
+#    python extract_refresh_token.py
+#    Copy the refresh token output
 #
 # 4. Add GitHub Secrets:
 #    - YOUTUBE_CLIENT_ID
 #    - YOUTUBE_CLIENT_SECRET
 #    - YOUTUBE_CLIENT_SECRET_JSON
-#    - YOUTUBE_TOKEN_PICKLE_BASE64 (from step 3)
+#    - YOUTUBE_REFRESH_TOKEN (from step 3)
 #    - PEXELS_API_KEY
 #    - GEMINI_API_KEY
 #    - HUGGINGFACE_API_KEY
