@@ -4,12 +4,16 @@ import logging
 import pickle
 import base64
 from typing import Dict, Optional
+from dotenv import load_dotenv
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from googleapiclient.errors import HttpError
+
+# Load environment variables
+load_dotenv()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -19,6 +23,8 @@ SCOPES = ['https://www.googleapis.com/auth/youtube.upload']
 
 class YouTubeUploader:
     def __init__(self, config: dict):
+        # Ensure environment variables are loaded
+        load_dotenv()
         self.config = config
         self.youtube = None
         self.credentials_file = 'client_secret.json'
@@ -32,6 +38,12 @@ class YouTubeUploader:
             # Try environment variables first (for CI/CD)
             if os.getenv('CI') or os.getenv('GITHUB_ACTIONS'):
                 logger.info("Detected CI environment, trying environment authentication")
+                logger.info(f"Debug - .env file exists: {os.path.exists('.env')}")
+                if os.path.exists('.env'):
+                    with open('.env', 'r') as f:
+                        env_content = f.read()
+                        logger.info(f"Debug - .env content length: {len(env_content)}")
+                        logger.info(f"Debug - YOUTUBE_REFRESH_TOKEN in .env: {'YOUTUBE_REFRESH_TOKEN' in env_content}")
                 creds = self._authenticate_from_env()
                 if creds:
                     self.youtube = build('youtube', 'v3', credentials=creds)
